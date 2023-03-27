@@ -11,6 +11,6 @@ X-Plasma-MainScript=ui/main.qml
 
 X-KDE-PluginInfo-Author=Himprakash Deka
 X-KDE-PluginInfo-Name=com.himdek.kde.plasma.overview
-X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Version=1.1
 X-KDE-PluginInfo-Category=Utilities
 X-KDE-PluginInfo-License=GPL-3.0-or-later
