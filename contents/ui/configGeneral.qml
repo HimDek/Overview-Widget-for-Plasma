@@ -28,7 +28,7 @@ ColumnLayout {
 
             KQuickAddons.IconDialog {
                 id: iconDialog
-                onIconNameChanged: cfg_icon = iconName || "start-here-kde"
+                onIconNameChanged: cfg_icon = iconName || "dialog-layers"
             }
 
             onPressed: iconMenu.opened ? iconMenu.close() : iconMenu.open()
@@ -63,7 +63,7 @@ ColumnLayout {
                 MenuItem {
                     text: i18nc("@item:inmenu Reset icon to default", "Clear Icon")
                     icon.name: "edit-clear"
-                    onClicked: cfg_icon = "start-here-kde"
+                    onClicked: cfg_icon = "dialog-layers"
                 }
             }
         }
