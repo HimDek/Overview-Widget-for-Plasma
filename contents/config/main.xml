@@ -7,8 +7,12 @@
 
   <group name="General">
     <entry name="icon" type="String">
-      <label>The name of the icon used in the compact representation (e.g. on a small panel).</label>
+      <label>Icon</label>
       <default>dialog-layers</default>
+    </entry>
+    <entry name="menuLabel" type="string">
+      <label>Text label</label>
+      <default></default>
     </entry>
     <entry name="command" type="String">
       <label>Command to execute</label>
