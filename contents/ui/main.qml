@@ -56,10 +56,9 @@ PlasmoidItem {
         Kirigami.Icon {
             id: icon
             height: Math.min(parent.height, parent.width)
-            width: height
-
-            source: plasmoid.configuration.icon === "" ? root.defaultIconName :
-                    plasmoid.configuration.icon
+            width: valid ? height : 0
+            visible: plasmoid.configuration.menuLabel === "" || plasmoid.configuration.icon !== ""
+            source: plasmoid.configuration.icon
         }
 
         PlasmaComponents3.Label {
