@@ -3,16 +3,20 @@
     "KPlugin": {
         "Authors": [
             {
+                "Email": "info@himdek.com",
                 "Name": "Himprakash Deka"
             }
         ],
-        "Category": "Utilities",
+        "Category": "Windows and Tasks",
         "Description": "Toggle Overview",
         "Icon": "dialog-layers",
         "Id": "com.himdek.kde.plasma.overview",
+        "EnabledByDefault": true,
         "License": "GPL-3.0-or-later",
         "Name": "Overview",
-        "Version": "1.1"
+        "Version": 1.2,
+        "BugReportUrl": "https://github.com/HimDek/Overview-Widget-for-Plasma/issues/new",
+        "Website": "https://himdek.com/Overview-Widget-for-Plasma/"
     },
     "X-Plasma-API-Minimum-Version": "6.0"
 }

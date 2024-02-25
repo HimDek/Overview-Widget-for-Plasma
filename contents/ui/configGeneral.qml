@@ -9,15 +9,19 @@
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.5
+import org.kde.plasma.plasmoid 2.0
 import org.kde.plasma.core as PlasmaCore
 import org.kde.kirigami 2.20 as Kirigami
 import org.kde.iconthemes as KIconThemes
+import org.kde.config as KConfig
+import org.kde.ksvg 1.0 as KSvg
 import org.kde.kcmutils as KCM
 
 KCM.SimpleKCM {
 
     property string cfg_menuLabel: menuLabel.text
     property string cfg_icon: Plasmoid.configuration.icon
+    property string def_icon: "dialog-layers"
 
     Kirigami.FormLayout {
         Button {
@@ -39,7 +43,7 @@ KCM.SimpleKCM {
 
             KIconThemes.IconDialog {
                 id: iconDialog
-                onIconNameChanged: cfg_icon = iconName || Tools.defaultIconName
+                onIconNameChanged: cfg_icon = iconName || def_icon
             }
 
             onPressed: iconMenu.opened ? iconMenu.close() : iconMenu.open()
@@ -56,7 +60,7 @@ KCM.SimpleKCM {
                     anchors.centerIn: parent
                     width: Kirigami.Units.iconSizes.large
                     height: width
-                    source: Tools.iconOrDefault(Plasmoid.formFactor, cfg_icon)
+                    source: cfg_icon
                 }
             }
 
@@ -75,8 +79,8 @@ KCM.SimpleKCM {
                 MenuItem {
                     text: i18nc("@item:inmenu Reset icon to default", "Reset to default icon")
                     icon.name: "edit-clear"
-                    enabled: cfg_icon !== Tools.defaultIconName
-                    onClicked: cfg_icon = Tools.defaultIconName
+                    enabled: cfg_icon !== def_icon
+                    onClicked: cfg_icon = def_icon
                 }
                 MenuItem {
                     text: i18nc("@action:inmenu", "Remove icon")
@@ -100,7 +104,7 @@ KCM.SimpleKCM {
                 // If the user remove the icon and remove the text, without this, we'll have no icon and no text.
                 // This is to force the icon to be there.
                 if (!menuLabel.text) {
-                    cfg_icon = cfg_icon || Tools.defaultIconName
+                    cfg_icon = cfg_icon || def_icon
                 }
             }
             rightActions: [
@@ -111,7 +115,7 @@ KCM.SimpleKCM {
                     onTriggered: {
                         menuLabel.clear()
                         cfg_menuLabel = ''
-                        cfg_icon = cfg_icon || Tools.defaultIconName
+                        cfg_icon = cfg_icon || def_icon
                     }
                 }
             ]
@@ -137,8 +141,17 @@ KCM.SimpleKCM {
             onClicked: KCM.KCMLauncher.openSystemSettings("kcm_plasmasearch")
         }
 
+        Item {
+            Kirigami.FormData.isSection: true
+        }
+
+        Label {
+            Layout.fillWidth: true
+            Layout.maximumWidth: Kirigami.Units.gridUnit * 20
+            text: i18nc("@info", "Overview must be enabled in Desktop Effects for this to work. Click the below button, search and enable Overview from the list.")
+            wrapMode: Text.Wrap
+        }
         Button {
-            Kirigami.FormData.label: i18n("Search and enable Overview in Desktop Effects: ")
             enabled: KConfig.KAuthorized.authorizeControlModule("kcm_kwin_effects")
             icon.name: "settings-configure"
             text: i18nc("@action:button", "Open Desktop Effects Settings")
