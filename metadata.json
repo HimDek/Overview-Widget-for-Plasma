@@ -8,13 +8,16 @@
             }
         ],
         "Category": "Windows and Tasks",
-        "Description": "Toggle Overview",
-        "Icon": "dialog-layers",
-        "Id": "com.himdek.kde.plasma.overview",
+        "ServiceTypes": [
+            "Plasma/Applet"
+        ],
         "EnabledByDefault": true,
-        "License": "GPL-3.0-or-later",
         "Name": "Overview",
+        "Description": "Toggle Overview",
+        "Id": "com.himdek.kde.plasma.overview",
+        "Icon": "dialog-layers",
         "Version": 1.2,
+        "License": "GPL-3.0-or-later",
         "BugReportUrl": "https://github.com/HimDek/Overview-Widget-for-Plasma/issues/new",
         "Website": "https://himdek.com/Overview-Widget-for-Plasma/"
     },
