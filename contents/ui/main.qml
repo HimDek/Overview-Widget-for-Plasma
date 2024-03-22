@@ -1,121 +1,94 @@
 /*
-    SPDX-FileCopyrightText: 2023 Himprakash Deka <himprakashd@gmail.com>
+    SPDX-FileCopyrightText: 2012 Gregor Taetzner <gregor@freenet.de>
+    SPDX-FileCopyrightText: 2020 Ivan Čukić <ivan.cukic at kde.org>
 
-    SPDX-License-Identifier: GPL-2.0-or-later
- */
-import QtQuick 2.6
-import QtQuick.Layouts 1.1
-import QtQuick.Controls 2.0
+    SPDX-License-Identifier: LGPL-2.0-or-later
+*/
 
-import org.kde.plasma.plasmoid 2.0
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.extras 2.0 as PlasmaExtras
-import org.kde.plasma.components 2.0 as PlasmaComponents
+import QtQuick
+import QtQuick.Layouts
+import org.kde.plasma.plasmoid
+import org.kde.plasma.core as PlasmaCore
+import org.kde.plasma.components as PlasmaComponents3
+import org.kde.draganddrop as DND
+import org.kde.kirigami as Kirigami
+import org.kde.activities as Activities
 
-import org.kde.kquickcontrolsaddons 2.0
+import org.kde.plasma.plasma5support as Plasma5Support
 
-Item {
+PlasmoidItem {
     id: root
 
-    property bool inPanel: plasmoid.location === PlasmaCore.Types.TopEdge
-        || plasmoid.location === PlasmaCore.Types.RightEdge
-        || plasmoid.location === PlasmaCore.Types.BottomEdge
-        || plasmoid.location === PlasmaCore.Types.LeftEdge
-    property bool vertical: plasmoid.formFactor === PlasmaCore.Types.Vertical
+    width: Kirigami.Units.iconSizes.large
+    height: Kirigami.Units.iconSizes.large
 
+    Layout.maximumWidth: Infinity
+    Layout.maximumHeight: Infinity
 
-    PlasmaCore.DataSource {
+    Layout.preferredWidth : icon.width + Kirigami.Units.smallSpacing + (root.showActivityName ? name.implicitWidth + Kirigami.Units.smallSpacing : 0)
+
+    Layout.minimumWidth: 0
+    Layout.minimumHeight: 0
+
+    readonly property bool inVertical: Plasmoid.formFactor === PlasmaCore.Types.Vertical
+    readonly property string defaultIconName: "dialog-layers"
+
+    Plasmoid.icon: Plasmoid.configuration.icon
+
+    preferredRepresentation: fullRepresentation
+
+    DND.DropArea {
+        id: dropArea
+        anchors.fill: parent
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: executable.exec(plasmoid.configuration.command)
+            onPressed: executable.exec(plasmoid.configuration.command)
+        }
+
+        PlasmaCore.ToolTipArea {
+            id: tooltip
+            anchors.fill: parent
+            mainText: i18n("Toggle Overview")
+        }
+
+        Kirigami.Icon {
+            id: icon
+            height: Math.min(parent.height, parent.width)
+            width: valid ? height : 0
+            visible: plasmoid.configuration.menuLabel === "" || plasmoid.configuration.icon !== ""
+            source: plasmoid.configuration.icon
+        }
+
+        PlasmaComponents3.Label {
+            id: name
+
+            anchors {
+                left: icon.right
+                leftMargin: Kirigami.Units.smallSpacing
+            }
+            height: parent.height
+            width: implicitWidth
+            visible: !(plasmoid.configuration.menuLabel === "") && !root.inVertical
+
+            verticalAlignment: Text.AlignVCenter
+
+            text: plasmoid.configuration.menuLabel
+        }
+    }
+
+    Plasma5Support.DataSource {
         id: executable
         engine: "executable"
         connectedSources: []
-        onNewData: disconnectSource(sourceName)
+        onNewData: function(source, data) {
+            disconnectSource(source)
+        }
 
         function exec(cmd) {
             executable.connectSource(cmd)
         }
     }
 
-    Plasmoid.preferredRepresentation: plasmoid.compactRepresentation
-    Plasmoid.icon: plasmoid.configuration.icon
-    Plasmoid.fullRepresentation: null
-    Plasmoid.compactRepresentation: MouseArea {
-        id: compactRoot
-
-        implicitWidth: PlasmaCore.Units.iconSizeHints.panel
-        implicitHeight: PlasmaCore.Units.iconSizeHints.panel
-
-        Layout.minimumWidth: {
-            if (!root.inPanel) {
-                return PlasmaCore.Units.iconSizes.small
-            }
-
-            if (root.vertical) {
-                return -1;
-            } else {
-                return Math.min(PlasmaCore.Units.iconSizeHints.panel, parent.height) * buttonIcon.aspectRatio;
-            }
-        }
-
-        Layout.minimumHeight: {
-            if (!root.inPanel) {
-                return PlasmaCore.Units.iconSizes.small
-            }
-
-            if (root.vertical) {
-                return Math.min(PlasmaCore.Units.iconSizeHints.panel, parent.width) * buttonIcon.aspectRatio;
-            } else {
-                return -1;
-            }
-        }
-
-        Layout.maximumWidth: {
-            if (!root.inPanel) {
-                return -1;
-            }
-
-            if (root.vertical) {
-                return PlasmaCore.Units.iconSizeHints.panel;
-            } else {
-                return Math.min(PlasmaCore.Units.iconSizeHints.panel, parent.height) * buttonIcon.aspectRatio;
-            }
-        }
-
-        Layout.maximumHeight: {
-            if (!root.inPanel) {
-                return -1;
-            }
-
-            if (root.vertical) {
-                return Math.min(PlasmaCore.Units.iconSizeHints.panel, parent.width) * buttonIcon.aspectRatio;
-            } else {
-                return PlasmaCore.Units.iconSizeHints.panel;
-            }
-        }
-        
-        onClicked: {
-                runCommand()
-            }
-
-        DropArea {
-            id: compactDragArea
-            anchors.fill: parent
-        }
-
-        PlasmaCore.IconItem {
-            id: buttonIcon
-
-            readonly property double aspectRatio: (root.vertical ? implicitHeight / implicitWidth
-                : implicitWidth / implicitHeight)
-
-            anchors.fill: parent
-            source: plasmoid.icon
-            active: parent.containsMouse || compactDragArea.containsDrag
-            smooth: true
-            roundToIconSize: aspectRatio === 1
-        }
-    }
-
-    function runCommand() {
-        executable.exec(plasmoid.configuration.command)
-    }
 }
